@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart Integration</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  canvas {
+    width: 90%;
+    margin: auto;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="myChart"></canvas>
+
+<script>
+  // Sample data
+  const beforeData = [650.00, 193.00, 256.00, 10.00, 790.00];
+  const afterData = [640.0, 186.8, 186.8, 7.52, 779.0];
+  const numbers = [10, 51, 20, 100, 11]
+
+  const labels = ["ACLBSL", "AHPC1", "AHPC1",  "SBCF", "TRH"];
+  const labelsWithDifference = labels.map((label, index) => `${label} (${(afterData[index] - beforeData[index]).toFixed(2)}) x${numbers[index]} (${((afterData[index] - beforeData[index])*numbers[index]).toFixed(2)})`);
+
+  const data = {
+    labels: labelsWithDifference,
+    datasets: [{
+      label: 'Before',
+      data: beforeData,
+      backgroundColor: 'blue'
+    }, {
+      label: 'After',
+      data: afterData,
+      backgroundColor: 'red'
+    }]
+  };
+
+  // Applying color logic
+  for (let i = 0; i < data.datasets[0].data.length; i++) {
+    if (data.datasets[1].data[i] > data.datasets[0].data[i]) {
+      data.datasets[0].backgroundColor[i] = 'blue';
+      data.datasets[1].backgroundColor[i] = 'green';
+    } else if (data.datasets[1].data[i] === data.datasets[0].data[i]) {
+      data.datasets[0].backgroundColor[i] = 'blue';
+      data.datasets[1].backgroundColor[i] = 'blue';
+    } else {
+      data.datasets[0].backgroundColor[i] = 'blue';
+      data.datasets[1].backgroundColor[i] = 'red';
+    }
+  }
+
+  // Chart configuration
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
